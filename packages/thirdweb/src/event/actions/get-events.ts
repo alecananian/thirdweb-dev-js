@@ -127,8 +127,6 @@ export async function getContractEvents<
     throw new Error("Cannot specify blockHash and range simultaneously,");
   }
 
-  const latestBlockNumber = await eth_blockNumber(rpcRequest);
-
   // Compute toBlock and fromBlock if blockRange was passed
   if (blockRange) {
     const { fromBlock, toBlock } = restParams;
@@ -150,6 +148,7 @@ export async function getContractEvents<
       restParams.fromBlock = BigInt(toBlock) - BigInt(blockRange) + 1n; // Add one because fromBlock is inclusive
     } else {
       // If no from or to block specified, use the latest block as the to block
+      const latestBlockNumber = await eth_blockNumber(rpcRequest);
       restParams.toBlock = latestBlockNumber;
       restParams.fromBlock = latestBlockNumber - BigInt(blockRange) + 1n; // Add one because fromBlock is inclusive
     }
